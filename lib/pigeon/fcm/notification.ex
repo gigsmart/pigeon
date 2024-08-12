@@ -411,13 +411,15 @@ defmodule Pigeon.FCM.Notification do
       iex> remove?(n)
       ["regid2", "regid5"]
   """
-  def remove?(%{response: response}) do
+  def remove?(%{response: response}) when is_list(response) or is_map(response) do
     response
     |> Enum.filter(fn {k, _v} ->
       k == :invalid_registration || k == :not_registered
     end)
     |> Keyword.values()
   end
+
+  def remove?(_), do: []
 end
 
 defimpl Pigeon.Encodable, for: Pigeon.FCM.Notification do

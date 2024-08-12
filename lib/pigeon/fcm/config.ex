@@ -2,7 +2,7 @@ defmodule Pigeon.FCM.Config do
   @moduledoc "FCM Configuration for Pigeon"
 
   defstruct key: nil,
-            uri: 'fcm.googleapis.com',
+            uri: ~c"fcm.googleapis.com",
             port: 443,
             name: nil
 
@@ -31,7 +31,7 @@ defmodule Pigeon.FCM.Config do
     %__MODULE__{
       name: opts[:name],
       key: opts[:key],
-      uri: Keyword.get(opts, :uri, 'fcm.googleapis.com'),
+      uri: Keyword.get(opts, :uri, ~c"fcm.googleapis.com"),
       port: Keyword.get(opts, :port, 443)
     }
   end
@@ -182,10 +182,9 @@ defimpl Pigeon.Configurable, for: Pigeon.FCM.Config do
     case Pigeon.json_library().decode(data) do
       {:ok, response} ->
         case response["reason"] do
-          nil -> :unknown
+          nil -> :unknown_error
           reason -> reason |> Macro.underscore() |> String.to_existing_atom()
         end
-
 
       error ->
         "JSON parse failed: #{inspect(error)}, body: #{inspect(data)}"
